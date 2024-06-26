@@ -15,32 +15,46 @@ import axios from "axios";
  */
 
 class TaskController {
+  private clientIp: string | string[] | null;
+  private geoLocationUrl: string;
+
+  constructor() {
+    this.clientIp = "";
+    this.geoLocationUrl = "";
+    this.logIpAddress = this.logIpAddress.bind(this);
+  }
+
   public logIpAddress(req: Request, res: Response): void {
-    const clientIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "Unknown IP";
+    this.clientIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "Unknown IP";
 
-    const geoLocationUrl = `https://ipinfo.io/${clientIp}/geo`;
+    if (Array.isArray(this.clientIp)) {
+      this.clientIp = this.clientIp[0];
+    }
 
-    try {
-      axios.get(geoLocationUrl).then((response) => {
+    this.geoLocationUrl = `https://ipinfo.io/${this.clientIp}/geo`;
+
+    axios
+      .get(this.geoLocationUrl)
+      .then((response) => {
         const location = response.data;
         res.status(StatusCodes.OK).json({
-          ip: `You're requesting for this resource from IP address: ${clientIp}`,
+          ip: `You're requesting for this resource from IP address: ${this.clientIp}`,
           geoLocation: {
             ip: location.ip,
             city: location.city,
             region: location.region,
             country: location.country,
             timezone: location.timezone,
-            long: location.loc.split(",")[0],
-            lat: location.loc.split(",")[1],
+            // long: location.loc.split(",")[0],
+            // lat: location.loc.split(",")[1],
           },
         });
+      })
+      .catch((error) => {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+          error: error.message,
+        });
       });
-    } catch (error) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        error: "An error occurred while fetching the IP address",
-      });
-    }
   }
 }
 

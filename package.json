@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "nodemon dist/server.js",
+    "dev": "yarn build && nodemon dist/server.js",
     "build": "yarn tsc",
     "lint": "yarn eslint src --ext js,ts",
     "watch": "nodemon --exec ts-node src/server.ts"
