@@ -16,10 +16,7 @@ import axios from "axios";
 
 class TaskController {
   public logIpAddress(req: Request, res: Response): void {
-    const clientIp =
-      req.headers["x-forwarded-for"] ||
-      req.socket.remoteAddress ||
-      "Unknown IP";
+    const clientIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "Unknown IP";
 
     const geoLocationUrl = `https://ipinfo.io/${clientIp}/geo`;
 
