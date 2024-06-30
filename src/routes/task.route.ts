@@ -10,7 +10,7 @@ class IpRouter {
   }
 
   private routes(): void {
-    this.router.get("/fetch-ip", taskController.logIpAddress);
+    this.router.get("/hello", taskController.logIpAddress);
   }
 }
 
