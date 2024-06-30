@@ -30,9 +30,7 @@ class TaskController {
     const { visitor_name } = req.query as { visitor_name: string };
     const capitalizeName = visitor_name.charAt(0).toUpperCase() + visitor_name.substring(1);
 
-    this.clientIp = req.ip as string;
-
-    // this.clientIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "Unknown IP";
+    this.clientIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "Unknown IP";
 
     if (Array.isArray(this.clientIp)) {
       this.clientIp = this.clientIp[0];
